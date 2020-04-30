@@ -807,7 +807,7 @@
                             },
                             "configuration": {
                               "StackName": "cdk-builder-bootcamp",
-                              "Capabilities": "CAPABILITY_NAMED_IAM",
+                              "Capabilities": "CAPABILITY_AUTO_EXPAND,CAPABILITY_NAMED_IAM",
                               "RoleArn": {
                                 "Fn::GetAtt": [
                                   "PipelineDeploypreReqsDeployRoleD4B94503",

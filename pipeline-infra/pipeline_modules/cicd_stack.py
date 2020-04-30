@@ -1,6 +1,7 @@
 from aws_cdk import (
     aws_codepipeline as codepipeline,
     aws_codepipeline_actions as codepipeline_actions,
+    aws_cloudformation as cfn,
     aws_iam as iam,
     aws_codecommit as codecommit,
     aws_s3 as s3,
@@ -96,9 +97,10 @@ class Pipeline(core.Stack):
                     actions=[
                         codepipeline_actions.CloudFormationCreateUpdateStackAction(
                             action_name='preReqsDeploy',
-                            extra_inputs=[cdk_build_output],
+                            #extra_inputs=[cdk_build_output],
                             stack_name="cdk-builder-bootcamp",
                             run_order=1,
+                            capabilities=[cfn.CloudFormationCapabilities.AUTO_EXPAND,cfn.CloudFormationCapabilities.NAMED_IAM],
                             admin_permissions=True,
                             #role=props['cfn_role'],
                             template_path=cdk_build_output.at_path(
