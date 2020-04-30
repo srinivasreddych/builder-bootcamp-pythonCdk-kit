@@ -30,7 +30,7 @@ class Pipeline(core.Stack):
                 filename='pipeline-infra/buildspecs/cb_test_buildspec.yml'),
             project_name=f"{props['namespace']}-testBuild",
             description='Codepipeline test build system',
-            environment=build.LinuxBuildImage.STANDARD_2_0,
+            environment=build.LinuxBuildImage.AMAZON_LINUX_2,
             # pass the S3 BucketName into the codebuild project so codebuild knows where to push the package artifact for aws package commands to work
             environment_variables={
                 'S3BUCKET': build.BuildEnvironmentVariable(
@@ -45,7 +45,7 @@ class Pipeline(core.Stack):
             build_spec=build.BuildSpec.from_source_filename(
                 filename='pipeline-infra/buildspecs/cb_package_buildspec.yml'),
             description='Codepipeline Packaging build system',
-            environment=build.LinuxBuildImage.STANDARD_2_0,
+            environment=build.LinuxBuildImage.AMAZON_LINUX_2,
             # pass the S3 BucketName into the codebuild project so codebuild knows where to push the package artifact for aws package commands to work
             environment_variables={
                 'S3BUCKET': build.BuildEnvironmentVariable(
