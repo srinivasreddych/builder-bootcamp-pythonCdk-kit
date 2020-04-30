@@ -1,1 +1,1 @@
-# builder-bootcamp-pythonCdk-kit
+# builder-bootcamp-pythonCDK-starter-kit

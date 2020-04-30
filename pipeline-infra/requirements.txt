@@ -1,0 +1,14 @@
+aws-cdk.core
+aws-cdk.aws-cloudformation
+aws-cdk.aws-codepipeline
+aws-cdk.aws-codepipeline-actions
+aws-cdk.aws-s3
+aws-cdk.aws-s3-assets
+aws-cdk.cx-api
+aws-cdk.region-info
+aws-cdk.aws-codecommit
+aws-cdk.aws-codebuild
+aws-cdk.aws-iam
+
+# Work around for jsii#413
+aws-cdk.aws-autoscaling-common

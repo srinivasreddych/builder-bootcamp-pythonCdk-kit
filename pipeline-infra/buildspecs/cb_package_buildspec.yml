@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  build:
+    commands:
+      - pipenv install --dev
+      #- npm install -g aws-cdk
+      #- pip3 install -r requirements.txt
+      - make build
+      #- cdk synth 
+      - aws cloudformation package --template-file template.yaml --s3-bucket $S3BUCKET --output-template-file outputtemplate.yaml
+ 
+artifacts:
+  #base-directory: cdk.out
+  type: zip
+  files:
+    - template.yaml
+    - outputtemplate.yaml

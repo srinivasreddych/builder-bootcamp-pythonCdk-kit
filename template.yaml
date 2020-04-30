@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  builder-bootcamp-python-starter-kit
+Globals:
+  Function:
+    Timeout: 3
+    Handler: app.handler
+    Runtime: python3.8
+
+Resources:
+
+  GetLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/get/
+      Events:
+        GetData:
+          Type: Api
+          Properties:
+            Path: /data/{data}
+            Method: GET
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: 'data-table'
+
+  PostLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/post/
+      Events:
+        PostData:
+          Type: Api
+          Properties:
+            Path: /data
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 'data-table'
+
+  DataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "data"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "data"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: "data-table"

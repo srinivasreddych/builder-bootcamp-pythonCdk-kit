@@ -1,0 +1,1697 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      "pre-reqs": {
+        "id": "pre-reqs",
+        "path": "pre-reqs",
+        "children": {
+          "ArtifactBucket": {
+            "id": "ArtifactBucket",
+            "path": "pre-reqs/ArtifactBucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "pre-reqs/ArtifactBucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "bucketName": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "cdk-builder-bootcamp-cp-",
+                          {
+                            "Ref": "AWS::AccountId"
+                          }
+                        ]
+                      ]
+                    },
+                    "versioningConfiguration": {
+                      "status": "Enabled"
+                    }
+                  }
+                }
+              },
+              "Notifications": {
+                "id": "Notifications",
+                "path": "pre-reqs/ArtifactBucket/Notifications"
+              }
+            }
+          },
+          "Role": {
+            "id": "Role",
+            "path": "pre-reqs/Role",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "pre-reqs/Role/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "cloudformation.amazonaws.com",
+                            "AWS": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":iam::560360184571:root"
+                                ]
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    }
+                  }
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "pre-reqs/Role/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "pre-reqs/Role/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "cloudformation:*",
+                                "lambda:*",
+                                "iam:*",
+                                "apigateway:*",
+                                "dynamodb:*"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "RoleDefaultPolicy5FFB7DAB",
+                        "roles": [
+                          {
+                            "Ref": "Role1ABCC5F0"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "Exports": {
+            "id": "Exports",
+            "path": "pre-reqs/Exports",
+            "children": {
+              "Output{\"Fn::GetAtt\":[\"ArtifactBucket7410C9EF\",\"Arn\"]}": {
+                "id": "Output{\"Fn::GetAtt\":[\"ArtifactBucket7410C9EF\",\"Arn\"]}",
+                "path": "pre-reqs/Exports/Output{\"Fn::GetAtt\":[\"ArtifactBucket7410C9EF\",\"Arn\"]}"
+              },
+              "Output{\"Ref\":\"ArtifactBucket7410C9EF\"}": {
+                "id": "Output{\"Ref\":\"ArtifactBucket7410C9EF\"}",
+                "path": "pre-reqs/Exports/Output{\"Ref\":\"ArtifactBucket7410C9EF\"}"
+              }
+            }
+          }
+        }
+      },
+      "cdk-builder-bootcamp-python-starter-kit": {
+        "id": "cdk-builder-bootcamp-python-starter-kit",
+        "path": "cdk-builder-bootcamp-python-starter-kit",
+        "children": {
+          "Repository": {
+            "id": "Repository",
+            "path": "cdk-builder-bootcamp-python-starter-kit/Repository",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Repository/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CodeCommit::Repository",
+                  "aws:cdk:cloudformation:props": {
+                    "repositoryName": "cdk-builder-bootcamp",
+                    "repositoryDescription": "cdk-builder-bootcamp"
+                  }
+                }
+              },
+              "cdkbuilderbootcamppythonstarterkitPipeline2222E360EventRule": {
+                "id": "cdkbuilderbootcamppythonstarterkitPipeline2222E360EventRule",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Repository/cdkbuilderbootcamppythonstarterkitPipeline2222E360EventRule",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Repository/cdkbuilderbootcamppythonstarterkitPipeline2222E360EventRule/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                      "aws:cdk:cloudformation:props": {
+                        "eventPattern": {
+                          "source": [
+                            "aws.codecommit"
+                          ],
+                          "resources": [
+                            {
+                              "Fn::GetAtt": [
+                                "Repository22E53BBD",
+                                "Arn"
+                              ]
+                            }
+                          ],
+                          "detail-type": [
+                            "CodeCommit Repository State Change"
+                          ],
+                          "detail": {
+                            "event": [
+                              "referenceCreated",
+                              "referenceUpdated"
+                            ],
+                            "referenceName": [
+                              "master"
+                            ]
+                          }
+                        },
+                        "state": "ENABLED",
+                        "targets": [
+                          {
+                            "id": "Target0",
+                            "arn": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":codepipeline:us-west-2:560360184571:",
+                                  {
+                                    "Ref": "PipelineC660917D"
+                                  }
+                                ]
+                              ]
+                            },
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "PipelineEventsRole46BEEA7C",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "testBuild": {
+            "id": "testBuild",
+            "path": "cdk-builder-bootcamp-python-starter-kit/testBuild",
+            "children": {
+              "Role": {
+                "id": "Role",
+                "path": "cdk-builder-bootcamp-python-starter-kit/testBuild/Role",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/testBuild/Role/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "codebuild.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/testBuild/Role/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/testBuild/Role/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "logs:CreateLogGroup",
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:us-west-2:560360184571:log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "testBuild84B4824D"
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:us-west-2:560360184571:log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "testBuild84B4824D"
+                                          },
+                                          ":*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "testBuildRoleDefaultPolicy11A31815",
+                            "roles": [
+                              {
+                                "Ref": "testBuildRole6AF6EC60"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "cdk-builder-bootcamp-python-starter-kit/testBuild/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
+                  "aws:cdk:cloudformation:props": {
+                    "artifacts": {
+                      "type": "CODEPIPELINE"
+                    },
+                    "environment": {
+                      "type": "LINUX_CONTAINER",
+                      "image": "aws/codebuild/standard:1.0",
+                      "privilegedMode": false,
+                      "computeType": "BUILD_GENERAL1_SMALL",
+                      "environmentVariables": [
+                        {
+                          "name": "S3BUCKET",
+                          "type": "PLAINTEXT",
+                          "value": {
+                            "Fn::ImportValue": "pre-reqs:ExportsOutputRefArtifactBucket7410C9EF659B6D66"
+                          }
+                        }
+                      ]
+                    },
+                    "serviceRole": {
+                      "Fn::GetAtt": [
+                        "testBuildRole6AF6EC60",
+                        "Arn"
+                      ]
+                    },
+                    "source": {
+                      "type": "CODEPIPELINE",
+                      "buildSpec": "buildspecs/cb_test_buildspec.yml"
+                    },
+                    "description": "Codepipeline test build system",
+                    "name": "cdk-builder-bootcamp-testBuild"
+                  }
+                }
+              }
+            }
+          },
+          "packagingBuild": {
+            "id": "packagingBuild",
+            "path": "cdk-builder-bootcamp-python-starter-kit/packagingBuild",
+            "children": {
+              "Role": {
+                "id": "Role",
+                "path": "cdk-builder-bootcamp-python-starter-kit/packagingBuild/Role",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/packagingBuild/Role/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "codebuild.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/packagingBuild/Role/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/packagingBuild/Role/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "logs:CreateLogGroup",
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:us-west-2:560360184571:log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "packagingBuild2E204C1F"
+                                          }
+                                        ]
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:us-west-2:560360184571:log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "packagingBuild2E204C1F"
+                                          },
+                                          ":*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*",
+                                    "s3:DeleteObject*",
+                                    "s3:PutObject*",
+                                    "s3:Abort*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "packagingBuildRoleDefaultPolicyC4339E42",
+                            "roles": [
+                              {
+                                "Ref": "packagingBuildRoleD95096BC"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "cdk-builder-bootcamp-python-starter-kit/packagingBuild/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
+                  "aws:cdk:cloudformation:props": {
+                    "artifacts": {
+                      "type": "CODEPIPELINE"
+                    },
+                    "environment": {
+                      "type": "LINUX_CONTAINER",
+                      "image": "aws/codebuild/standard:1.0",
+                      "privilegedMode": false,
+                      "computeType": "BUILD_GENERAL1_SMALL",
+                      "environmentVariables": [
+                        {
+                          "name": "S3BUCKET",
+                          "type": "PLAINTEXT",
+                          "value": {
+                            "Fn::ImportValue": "pre-reqs:ExportsOutputRefArtifactBucket7410C9EF659B6D66"
+                          }
+                        }
+                      ]
+                    },
+                    "serviceRole": {
+                      "Fn::GetAtt": [
+                        "packagingBuildRoleD95096BC",
+                        "Arn"
+                      ]
+                    },
+                    "source": {
+                      "type": "CODEPIPELINE",
+                      "buildSpec": "buildspecs/cb_package_buildspec.yml"
+                    },
+                    "description": "Codepipeline Packaging build system",
+                    "name": "cdk-builder-bootcamp-packagingBuild"
+                  }
+                }
+              }
+            }
+          },
+          "Pipeline": {
+            "id": "Pipeline",
+            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline",
+            "children": {
+              "Role": {
+                "id": "Role",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Role",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Role/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "codepipeline.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Role/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Role/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*",
+                                    "s3:DeleteObject*",
+                                    "s3:PutObject*",
+                                    "s3:Abort*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "PipelineSourceCodeCommitSourceCodePipelineActionRole89AB8DD5",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "PipelineBuildtestArtifactsCodePipelineActionRoleD136A69B",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "PipelineBuildpackageArtifactsCodePipelineActionRole04ECC799",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "PipelineDeploypreReqsDeployCodePipelineActionRoleFD4175C1",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "PipelineDeployappDeployCodePipelineActionRole3843B624",
+                                      "Arn"
+                                    ]
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "PipelineRoleDefaultPolicyC7A05455",
+                            "roles": [
+                              {
+                                "Ref": "PipelineRoleD68726F7"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CodePipeline::Pipeline",
+                  "aws:cdk:cloudformation:props": {
+                    "roleArn": {
+                      "Fn::GetAtt": [
+                        "PipelineRoleD68726F7",
+                        "Arn"
+                      ]
+                    },
+                    "stages": [
+                      {
+                        "name": "Source",
+                        "actions": [
+                          {
+                            "name": "CodeCommit_Source",
+                            "outputArtifacts": [
+                              {
+                                "name": "SourceOutput"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Source",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CodeCommit"
+                            },
+                            "configuration": {
+                              "RepositoryName": {
+                                "Fn::GetAtt": [
+                                  "Repository22E53BBD",
+                                  "Name"
+                                ]
+                              },
+                              "BranchName": "master",
+                              "PollForSourceChanges": false
+                            },
+                            "runOrder": 1,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "PipelineSourceCodeCommitSourceCodePipelineActionRole89AB8DD5",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Build",
+                        "actions": [
+                          {
+                            "name": "testArtifacts",
+                            "inputArtifacts": [
+                              {
+                                "name": "SourceOutput"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Build",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CodeBuild"
+                            },
+                            "configuration": {
+                              "ProjectName": {
+                                "Ref": "testBuild84B4824D"
+                              }
+                            },
+                            "runOrder": 1,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "PipelineBuildtestArtifactsCodePipelineActionRoleD136A69B",
+                                "Arn"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "packageArtifacts",
+                            "inputArtifacts": [
+                              {
+                                "name": "SourceOutput"
+                              }
+                            ],
+                            "outputArtifacts": [
+                              {
+                                "name": "BuildArtifact"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Build",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CodeBuild"
+                            },
+                            "configuration": {
+                              "ProjectName": {
+                                "Ref": "packagingBuild2E204C1F"
+                              }
+                            },
+                            "runOrder": 2,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "PipelineBuildpackageArtifactsCodePipelineActionRole04ECC799",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Deploy",
+                        "actions": [
+                          {
+                            "name": "preReqsDeploy",
+                            "inputArtifacts": [
+                              {
+                                "name": "BuildArtifact"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Deploy",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CloudFormation"
+                            },
+                            "configuration": {
+                              "StackName": "cdk-builder-bootcamp",
+                              "Capabilities": "CAPABILITY_NAMED_IAM",
+                              "RoleArn": {
+                                "Fn::GetAtt": [
+                                  "PipelineDeploypreReqsDeployRoleD4B94503",
+                                  "Arn"
+                                ]
+                              },
+                              "ActionMode": "CREATE_UPDATE",
+                              "TemplatePath": "BuildArtifact::pre-reqs.template.json"
+                            },
+                            "runOrder": 1,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "PipelineDeploypreReqsDeployCodePipelineActionRoleFD4175C1",
+                                "Arn"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "appDeploy",
+                            "inputArtifacts": [
+                              {
+                                "name": "BuildArtifact"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Deploy",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CloudFormation"
+                            },
+                            "configuration": {
+                              "StackName": "cdk-builder-bootcamp",
+                              "Capabilities": "CAPABILITY_NAMED_IAM",
+                              "RoleArn": {
+                                "Fn::GetAtt": [
+                                  "PipelineDeployappDeployRole787AF6E2",
+                                  "Arn"
+                                ]
+                              },
+                              "ActionMode": "CREATE_UPDATE",
+                              "TemplatePath": "BuildArtifact::cdk-builder-bootcamp-python-starter-kit.template.json"
+                            },
+                            "runOrder": 2,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "PipelineDeployappDeployCodePipelineActionRole3843B624",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "artifactStore": {
+                      "type": "S3",
+                      "location": {
+                        "Fn::ImportValue": "pre-reqs:ExportsOutputRefArtifactBucket7410C9EF659B6D66"
+                      }
+                    },
+                    "name": "cdk-builder-bootcamp"
+                  }
+                }
+              },
+              "Source": {
+                "id": "Source",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Source",
+                "children": {
+                  "CodeCommit_Source": {
+                    "id": "CodeCommit_Source",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Source/CodeCommit_Source",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Source/CodeCommit_Source/CodePipelineActionRole",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Source/CodeCommit_Source/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::560360184571:root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Source/CodeCommit_Source/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Source/CodeCommit_Source/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "s3:GetObject*",
+                                            "s3:GetBucket*",
+                                            "s3:List*",
+                                            "s3:DeleteObject*",
+                                            "s3:PutObject*",
+                                            "s3:Abort*"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": [
+                                            {
+                                              "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                            },
+                                            {
+                                              "Fn::Join": [
+                                                "",
+                                                [
+                                                  {
+                                                    "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                                  },
+                                                  "/*"
+                                                ]
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "Action": [
+                                            "codecommit:GetBranch",
+                                            "codecommit:GetCommit",
+                                            "codecommit:UploadArchive",
+                                            "codecommit:GetUploadArchiveStatus",
+                                            "codecommit:CancelUploadArchive"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "Repository22E53BBD",
+                                              "Arn"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineSourceCodeCommitSourceCodePipelineActionRoleDefaultPolicyD20EE23A",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineSourceCodeCommitSourceCodePipelineActionRole89AB8DD5"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "EventsRole": {
+                "id": "EventsRole",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/EventsRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/EventsRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "events.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/EventsRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/EventsRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "codepipeline:StartPipelineExecution",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":codepipeline:us-west-2:560360184571:",
+                                        {
+                                          "Ref": "PipelineC660917D"
+                                        }
+                                      ]
+                                    ]
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "PipelineEventsRoleDefaultPolicyFF4FCCE0",
+                            "roles": [
+                              {
+                                "Ref": "PipelineEventsRole46BEEA7C"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Build": {
+                "id": "Build",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build",
+                "children": {
+                  "testArtifacts": {
+                    "id": "testArtifacts",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/testArtifacts",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/testArtifacts/CodePipelineActionRole",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/testArtifacts/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::560360184571:root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/testArtifacts/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/testArtifacts/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "codebuild:BatchGetBuilds",
+                                            "codebuild:StartBuild",
+                                            "codebuild:StopBuild"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "testBuild84B4824D",
+                                              "Arn"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineBuildtestArtifactsCodePipelineActionRoleDefaultPolicy23B1281E",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineBuildtestArtifactsCodePipelineActionRoleD136A69B"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "packageArtifacts": {
+                    "id": "packageArtifacts",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/packageArtifacts",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/packageArtifacts/CodePipelineActionRole",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/packageArtifacts/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::560360184571:root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/packageArtifacts/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Build/packageArtifacts/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "codebuild:BatchGetBuilds",
+                                            "codebuild:StartBuild",
+                                            "codebuild:StopBuild"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "packagingBuild2E204C1F",
+                                              "Arn"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineBuildpackageArtifactsCodePipelineActionRoleDefaultPolicyA260F699",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineBuildpackageArtifactsCodePipelineActionRole04ECC799"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Deploy": {
+                "id": "Deploy",
+                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy",
+                "children": {
+                  "preReqsDeploy": {
+                    "id": "preReqsDeploy",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/CodePipelineActionRole",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::560360184571:root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "8389e75f-0810-4838-bf64-d6f85a95cf83": {
+                            "id": "8389e75f-0810-4838-bf64-d6f85a95cf83",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/CodePipelineActionRole/8389e75f-0810-4838-bf64-d6f85a95cf83"
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": "iam:PassRole",
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "PipelineDeploypreReqsDeployRoleD4B94503",
+                                              "Arn"
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "Action": [
+                                            "s3:GetObject*",
+                                            "s3:GetBucket*",
+                                            "s3:List*"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": [
+                                            {
+                                              "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                            },
+                                            {
+                                              "Fn::Join": [
+                                                "",
+                                                [
+                                                  {
+                                                    "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                                  },
+                                                  "/*"
+                                                ]
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "Action": [
+                                            "cloudformation:CreateStack",
+                                            "cloudformation:DescribeStack*",
+                                            "cloudformation:GetStackPolicy",
+                                            "cloudformation:GetTemplate*",
+                                            "cloudformation:SetStackPolicy",
+                                            "cloudformation:UpdateStack",
+                                            "cloudformation:ValidateTemplate"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::Join": [
+                                              "",
+                                              [
+                                                "arn:",
+                                                {
+                                                  "Ref": "AWS::Partition"
+                                                },
+                                                ":cloudformation:us-west-2:560360184571:stack/cdk-builder-bootcamp/*"
+                                              ]
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineDeploypreReqsDeployCodePipelineActionRoleDefaultPolicy55E61252",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineDeploypreReqsDeployCodePipelineActionRoleFD4175C1"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Role": {
+                        "id": "Role",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/Role",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/Role/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "Service": "cloudformation.amazonaws.com"
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/Role/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/preReqsDeploy/Role/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "s3:GetObject*",
+                                            "s3:GetBucket*",
+                                            "s3:List*"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": [
+                                            {
+                                              "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                            },
+                                            {
+                                              "Fn::Join": [
+                                                "",
+                                                [
+                                                  {
+                                                    "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                                  },
+                                                  "/*"
+                                                ]
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "Action": "*",
+                                          "Effect": "Allow",
+                                          "Resource": "*"
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineDeploypreReqsDeployRoleDefaultPolicy58229736",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineDeploypreReqsDeployRoleD4B94503"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "appDeploy": {
+                    "id": "appDeploy",
+                    "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/CodePipelineActionRole",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::560360184571:root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "8389e75f-0810-4838-bf64-d6f85a95cf83": {
+                            "id": "8389e75f-0810-4838-bf64-d6f85a95cf83",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/CodePipelineActionRole/8389e75f-0810-4838-bf64-d6f85a95cf83"
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": "iam:PassRole",
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "PipelineDeployappDeployRole787AF6E2",
+                                              "Arn"
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "Action": [
+                                            "s3:GetObject*",
+                                            "s3:GetBucket*",
+                                            "s3:List*"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": [
+                                            {
+                                              "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                            },
+                                            {
+                                              "Fn::Join": [
+                                                "",
+                                                [
+                                                  {
+                                                    "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                                  },
+                                                  "/*"
+                                                ]
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "Action": [
+                                            "cloudformation:CreateStack",
+                                            "cloudformation:DescribeStack*",
+                                            "cloudformation:GetStackPolicy",
+                                            "cloudformation:GetTemplate*",
+                                            "cloudformation:SetStackPolicy",
+                                            "cloudformation:UpdateStack",
+                                            "cloudformation:ValidateTemplate"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::Join": [
+                                              "",
+                                              [
+                                                "arn:",
+                                                {
+                                                  "Ref": "AWS::Partition"
+                                                },
+                                                ":cloudformation:us-west-2:560360184571:stack/cdk-builder-bootcamp/*"
+                                              ]
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineDeployappDeployCodePipelineActionRoleDefaultPolicy549DF8C9",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineDeployappDeployCodePipelineActionRole3843B624"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Role": {
+                        "id": "Role",
+                        "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/Role",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/Role/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "Service": "cloudformation.amazonaws.com"
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/Role/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "cdk-builder-bootcamp-python-starter-kit/Pipeline/Deploy/appDeploy/Role/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "s3:GetObject*",
+                                            "s3:GetBucket*",
+                                            "s3:List*"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": [
+                                            {
+                                              "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                            },
+                                            {
+                                              "Fn::Join": [
+                                                "",
+                                                [
+                                                  {
+                                                    "Fn::ImportValue": "pre-reqs:ExportsOutputFnGetAttArtifactBucket7410C9EFArnA3946625"
+                                                  },
+                                                  "/*"
+                                                ]
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "Action": "*",
+                                          "Effect": "Allow",
+                                          "Resource": "*"
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "PipelineDeployappDeployRoleDefaultPolicy0478F322",
+                                    "roles": [
+                                      {
+                                        "Ref": "PipelineDeployappDeployRole787AF6E2"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "PipelineOut": {
+            "id": "PipelineOut",
+            "path": "cdk-builder-bootcamp-python-starter-kit/PipelineOut"
+          },
+          "CodeCommit": {
+            "id": "CodeCommit",
+            "path": "cdk-builder-bootcamp-python-starter-kit/CodeCommit"
+          }
+        }
+      }
+    }
+  }
+}
