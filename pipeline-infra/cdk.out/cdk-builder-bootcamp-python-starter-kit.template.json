@@ -191,7 +191,7 @@
               }
             }
           ],
-          "Image": "aws/codebuild/standard:1.0",
+          "Image": "aws/codebuild/amazonlinux2-x86_64-standard:2.0",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
         },
@@ -336,7 +336,7 @@
               }
             }
           ],
-          "Image": "aws/codebuild/standard:1.0",
+          "Image": "aws/codebuild/amazonlinux2-x86_64-standard:2.0",
           "PrivilegedMode": false,
           "Type": "LINUX_CONTAINER"
         },

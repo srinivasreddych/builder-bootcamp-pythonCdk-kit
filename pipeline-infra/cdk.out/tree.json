@@ -358,7 +358,7 @@
                     },
                     "environment": {
                       "type": "LINUX_CONTAINER",
-                      "image": "aws/codebuild/standard:1.0",
+                      "image": "aws/codebuild/amazonlinux2-x86_64-standard:2.0",
                       "privilegedMode": false,
                       "computeType": "BUILD_GENERAL1_SMALL",
                       "environmentVariables": [
@@ -524,7 +524,7 @@
                     },
                     "environment": {
                       "type": "LINUX_CONTAINER",
-                      "image": "aws/codebuild/standard:1.0",
+                      "image": "aws/codebuild/amazonlinux2-x86_64-standard:2.0",
                       "privilegedMode": false,
                       "computeType": "BUILD_GENERAL1_SMALL",
                       "environmentVariables": [
