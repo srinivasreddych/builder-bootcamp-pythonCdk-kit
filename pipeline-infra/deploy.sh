@@ -3,14 +3,10 @@ set -e
 set -u
 cd $(dirname $0)
 
-#Check utilities are installed or not
-
-cdk_utils=(
-  typescript
-  aws-cdk
-)
-
-check1_cdk_utils=(
+#Check all the required utilities finally
+all=(
+  nvm
+  node
   tsc
   cdk
 )
@@ -30,28 +26,26 @@ check_node() {
     fi
 }
 
-#Install CDK
-install_cdk_utils() {
-    for i in ${cdk_utils[*]}; do
-        npm install -g $i --force
-    done
+#Install Typescript if not present
+check_install_ts_utils() {
+    if ! command -v "tsc" < /dev/null 2>&1; then
+        npm install -g "typescript" --force
+    fi
 }
 
-#Check CDK components
-check_cdk_utils() {
-    for i in ${check1_cdk_utils[*]}; do
-        if ! command -v $i > /dev/null 2>&1; then
-            echo " The utility $i failed to install and hence exiting" && exit 1
-        fi
-    done
+#Install CDK if not present
+check_install_cdk_utils() {
+    if ! command -v "cdk" < /dev/null 2>&1; then
+        npm install -g "aws-cdk" --force
+    fi
 }
 
 check_nvm
 check_node
-install_cdk_utils
-check_cdk_utils
+check_install_ts_utils
+check_install_cdk_utils
 
 #Install the required cdk constructs
-pip install -r requirements.txt --user
+pip3 install -r requirements.txt --user
 cdk synth
 cdk deploy cdk-builder-bootcamp-python-starter-kit --require-approval never
